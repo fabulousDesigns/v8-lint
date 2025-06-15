@@ -1,0 +1,99 @@
+{
+  "compilerOptions": {
+    // Output Configuration
+    "target": "ES2020",
+    "lib": ["ES2020"],
+    "module": "CommonJS",
+    "outDir": "./out",
+    "rootDir": "./src",
+
+    // Module Resolution
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+
+    // Type Checking
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": false,
+    "noUncheckedIndexedAccess": true,
+
+    // Emit Configuration
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "removeComments": false,
+    "noEmitOnError": true,
+    "preserveConstEnums": true,
+
+    // Performance & Development
+    "skipLibCheck": true,
+    "incremental": true,
+    "tsBuildInfoFile": "./out/.tsbuildinfo",
+
+    // Experimental Features
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+
+    // Advanced Options
+    "newLine": "lf",
+    "stripInternal": true,
+    "noErrorTruncation": true,
+    "preserveWatchOutput": true,
+
+    // Path Mapping for Clean Imports
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["*"],
+      "@/rules/*": ["rules/*"],
+      "@/core/*": ["core/*"],
+      "@/utils/*": ["utils/*"],
+      "@/test/*": ["../test/*"]
+    }
+  },
+
+  // Include/Exclude Configuration
+  "include": ["src/**/*", "test/**/*"],
+
+  "exclude": [
+    "node_modules",
+    "out",
+    "dist",
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "scripts/**/*"
+  ],
+
+  // TypeScript Project References (for large projects)
+  "references": [],
+
+  // Watch Mode Configuration
+  "watchOptions": {
+    "watchFile": "useFsEvents",
+    "watchDirectory": "useFsEvents",
+    "fallbackPolling": "dynamicPriority",
+    "synchronousWatchDirectory": true,
+    "excludeDirectories": ["**/node_modules", "**/out", "**/dist"]
+  },
+
+  // VS Code specific settings
+  "compileOnSave": false,
+  "typeAcquisition": {
+    "enable": false,
+    "include": [],
+    "exclude": []
+  }
+}

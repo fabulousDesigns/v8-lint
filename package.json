@@ -1,0 +1,204 @@
+{
+  "name": "v8-lint",
+  "displayName": "V8 Lint - JavaScript Performance Rules",
+  "description": "Real-time V8 performance optimization hints for JavaScript developers. Detects performance anti-patterns and suggests fixes.",
+  "version": "0.1.0",
+  "publisher": "fabulousDesigns",
+  "author": {
+    "name": "fabulousDesigns",
+    "url": "https://github.com/fabulousDesigns"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fabulousDesigns/v8-lint.git"
+  },
+  "bugs": {
+    "url": "https://github.com/fabulousDesigns/v8-lint/issues"
+  },
+  "homepage": "https://github.com/fabulousDesigns/v8-lint#readme",
+  "engines": {
+    "vscode": "^1.74.0",
+    "node": ">=16.0.0"
+  },
+  "categories": [
+    "Linters",
+    "Other",
+    "Programming Languages"
+  ],
+  "keywords": [
+    "javascript",
+    "typescript",
+    "performance",
+    "v8",
+    "optimization",
+    "lint",
+    "chrome",
+    "node",
+    "react",
+    "vue",
+    "angular"
+  ],
+  "icon": "assets/icon.png",
+  "galleryBanner": {
+    "color": "#1e1e1e",
+    "theme": "dark"
+  },
+  "activationEvents": [
+    "onLanguage:javascript",
+    "onLanguage:javascriptreact",
+    "onLanguage:typescript",
+    "onLanguage:typescriptreact"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "configuration": {
+      "title": "V8 Lint",
+      "properties": {
+        "v8lint.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable/disable V8 performance linting"
+        },
+        "v8lint.severity": {
+          "type": "string",
+          "enum": [
+            "error",
+            "warning",
+            "info"
+          ],
+          "default": "warning",
+          "description": "Default severity level for V8 performance issues"
+        },
+        "v8lint.rules": {
+          "type": "object",
+          "default": {
+            "no-dynamic-object-properties": "warning",
+            "no-array-constructor-holes": "warning",
+            "no-property-deletion": "warning",
+            "no-arguments-object": "warning",
+            "no-array-type-mixing": "warning",
+            "prefer-packed-arrays": "warning",
+            "no-regexp-modification": "info",
+            "no-smi-double-field-transition": "error"
+          },
+          "description": "Configure individual rule severity levels",
+          "additionalProperties": {
+            "type": "string",
+            "enum": [
+              "error",
+              "warning",
+              "info",
+              "off"
+            ]
+          }
+        },
+        "v8lint.showQuickFixes": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show quick fix suggestions for V8 performance issues"
+        },
+        "v8lint.excludePatterns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "**/node_modules/**",
+            "**/dist/**",
+            "**/build/**"
+          ],
+          "description": "File patterns to exclude from V8 linting"
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "v8lint.lintFile",
+        "title": "Lint Current File",
+        "category": "V8 Lint"
+      },
+      {
+        "command": "v8lint.lintWorkspace",
+        "title": "Lint Entire Workspace",
+        "category": "V8 Lint"
+      },
+      {
+        "command": "v8lint.showReport",
+        "title": "Show Performance Report",
+        "category": "V8 Lint"
+      },
+      {
+        "command": "v8lint.toggleEnabled",
+        "title": "Toggle V8 Lint",
+        "category": "V8 Lint"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "v8lint.lintFile",
+          "when": "resourceExtname == .js || resourceExtname == .ts || resourceExtname == .jsx || resourceExtname == .tsx",
+          "group": "V8Lint"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "v8lint.lintFile",
+          "when": "resourceExtname == .js || resourceExtname == .ts || resourceExtname == .jsx || resourceExtname == .tsx",
+          "group": "V8Lint"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "v8lint.lintFile",
+        "key": "ctrl+shift+v8",
+        "mac": "cmd+shift+v8",
+        "when": "editorTextFocus"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "compile:watch": "tsc -watch -p ./",
+    "package": "webpack --mode production --devtool hidden-source-map",
+    "compile-web": "webpack",
+    "watch-web": "webpack --watch",
+    "package-web": "webpack --mode production --devtool hidden-source-map",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "lint:fix": "eslint src --ext ts --fix",
+    "test": "node ./out/test/runTest.js",
+    "test:unit": "jest",
+    "test:coverage": "jest --coverage",
+    "format": "prettier --write \"src/**/*.{ts,js,json}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,js,json}\"",
+    "clean": "rimraf out",
+    "build": "npm run clean && npm run compile",
+    "build:production": "npm run clean && npm run package",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.74.0",
+    "@types/node": "16.x",
+    "@types/jest": "^29.5.0",
+    "@typescript-eslint/eslint-plugin": "^5.45.0",
+    "@typescript-eslint/parser": "^5.45.0",
+    "@vscode/test-electron": "^2.2.0",
+    "eslint": "^8.28.0",
+    "jest": "^29.5.0",
+    "ts-jest": "^29.1.0",
+    "typescript": "^4.9.4",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.0",
+    "ts-loader": "^9.4.1",
+    "prettier": "^2.8.0",
+    "husky": "^8.0.0",
+    "rimraf": "^4.0.0"
+  },
+  "dependencies": {
+    "typescript": "^4.9.4"
+  }
+}
