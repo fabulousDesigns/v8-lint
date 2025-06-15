@@ -1,0 +1,200 @@
+{
+  "rules": {
+    "no-dynamic-object-properties": {
+      "id": "no-dynamic-object-properties",
+      "name": "No Dynamic Object Properties",
+      "description": "Prevents dynamic property addition that creates new object shapes",
+      "category": "object-optimization",
+      "defaultSeverity": "warning",
+      "documentation": "https://github.com/fabulousDesigns/v8-lint/docs/rules/no-dynamic-object-properties.md",
+      "examples": {
+        "bad": [
+          "const obj = {}; obj.newProp = 'value';",
+          "function addProp(o) { o.dynamic = true; }"
+        ],
+        "good": [
+          "const obj = { newProp: 'value' };",
+          "const obj = { newProp: undefined }; obj.newProp = 'value';"
+        ]
+      },
+      "fixable": true,
+      "requiresTypeInfo": false,
+      "impactDescription": "Each dynamic property addition creates a new HiddenClass, reducing optimization effectiveness",
+      "v8Behavior": "V8 creates new hidden classes for each object shape change, preventing optimization",
+      "tags": ["object", "shape", "hiddenclass", "performance"],
+      "since": "0.1.0"
+    },
+
+    "no-array-constructor-holes": {
+      "id": "no-array-constructor-holes",
+      "name": "No Array Constructor Holes",
+      "description": "Prevents creating arrays with holes using Array constructor",
+      "category": "array-optimization",
+      "defaultSeverity": "warning",
+      "documentation": "https://github.com/fabulousDesigns/v8-lint/docs/rules/no-array-constructor-holes.md",
+      "examples": {
+        "bad": [
+          "const arr = new Array(100);",
+          "const sparse = new Array(10); sparse[9] = 'value';"
+        ],
+        "good": [
+          "const arr = new Array(100).fill(null);",
+          "const arr = Array.from({length: 100}, () => null);"
+        ]
+      },
+      "fixable": true,
+      "requiresTypeInfo": false,
+      "impactDescription": "Holey arrays use slower dictionary-based elements storage instead of fast packed elements",
+      "v8Behavior": "V8 uses different elements kinds for holey vs packed arrays, with significant performance differences",
+      "tags": ["array", "holes", "elements", "packed"],
+      "since": "0.1.0"
+    },
+
+    "no-property-deletion": {
+      "id": "no-property-deletion",
+      "name": "No Property Deletion",
+      "description": "Prevents property deletion that forces objects into dictionary mode",
+      "category": "object-optimization",
+      "defaultSeverity": "warning",
+      "documentation": "https://github.com/fabulousDesigns/v8-lint/docs/rules/no-property-deletion.md",
+      "examples": {
+        "bad": [
+          "delete obj.property;",
+          "const {unused, ...rest} = obj; // when followed by delete"
+        ],
+        "good": ["obj.property = undefined;", "obj.property = null;"]
+      },
+      "fixable": true,
+      "requiresTypeInfo": false,
+      "impactDescription": "Property deletion forces objects into slow dictionary mode for property access",
+      "v8Behavior": "V8 switches objects to dictionary mode after property deletion, making all property access slower",
+      "tags": ["object", "delete", "dictionary", "properties"],
+      "since": "0.1.0"
+    },
+
+    "no-arguments-object": {
+      "id": "no-arguments-object",
+      "name": "No Arguments Object",
+      "description": "Prevents using the arguments object in favor of rest parameters",
+      "category": "function-optimization",
+      "defaultSeverity": "warning",
+      "documentation": "https://github.com/fabulousDesigns/v8-lint/docs/rules/no-arguments-object.md",
+      "examples": {
+        "bad": [
+          "function fn() { return Array.from(arguments); }",
+          "function fn() { console.log(arguments.length); }"
+        ],
+        "good": [
+          "function fn(...args) { return args; }",
+          "function fn(...args) { console.log(args.length); }"
+        ]
+      },
+      "fixable": true,
+      "requiresTypeInfo": false,
+      "impactDescription": "Arguments object prevents function optimization and creates unnecessary array-like objects",
+      "v8Behavior": "V8 cannot optimize functions that use the arguments object as effectively",
+      "tags": ["function", "arguments", "rest", "parameters"],
+      "since": "0.1.0"
+    },
+
+    "no-array-type-mixing": {
+      "id": "no-array-type-mixing",
+      "name": "No Array Type Mixing",
+      "description": "Prevents mixing different types in arrays that cause elements kind transitions",
+      "category": "array-optimization",
+      "defaultSeverity": "warning",
+      "documentation": "https://github.com/fabulousDesigns/v8-lint/docs/rules/no-array-type-mixing.md",
+      "examples": {
+        "bad": [
+          "const arr = [1, 2, 3]; arr.push('string');",
+          "const mixed = [1, 'hello', true, 3.14];"
+        ],
+        "good": [
+          "const numbers = [1, 2, 3]; const strings = ['hello'];",
+          "const numbers = [1, 2, 3, 4]; // Keep consistent types"
+        ]
+      },
+      "fixable": false,
+      "requiresTypeInfo": false,
+      "impactDescription": "Type mixing forces array elements kind transitions from fast SMI to slower generic elements",
+      "v8Behavior": "V8 optimizes arrays based on element types - mixing types triggers costly transitions",
+      "tags": ["array", "types", "elements", "smi", "transitions"],
+      "since": "0.1.0"
+    },
+
+    "prefer-packed-arrays": {
+      "id": "prefer-packed-arrays",
+      "name": "Prefer Packed Arrays",
+      "description": "Prevents creating sparse arrays that use dictionary elements storage",
+      "category": "array-optimization",
+      "defaultSeverity": "warning",
+      "documentation": "https://github.com/fabulousDesigns/v8-lint/docs/rules/prefer-packed-arrays.md",
+      "examples": {
+        "bad": [
+          "const arr = []; arr[100] = 'value';",
+          "const sparse = [1, , , 4];"
+        ],
+        "good": [
+          "const arr = new Array(101).fill(null); arr[100] = 'value';",
+          "const dense = [1, null, null, 4];"
+        ]
+      },
+      "fixable": false,
+      "requiresTypeInfo": false,
+      "impactDescription": "Sparse arrays use slower dictionary-based storage instead of fast continuous memory",
+      "v8Behavior": "V8 switches sparse arrays to dictionary mode, making element access significantly slower",
+      "tags": ["array", "sparse", "packed", "dictionary"],
+      "since": "0.1.0"
+    },
+
+    "no-regexp-modification": {
+      "id": "no-regexp-modification",
+      "name": "No RegExp Modification",
+      "description": "Prevents modifying RegExp instances or prototype that disables fast paths",
+      "category": "regexp-optimization",
+      "defaultSeverity": "info",
+      "documentation": "https://github.com/fabulousDesigns/v8-lint/docs/rules/no-regexp-modification.md",
+      "examples": {
+        "bad": [
+          "const re = /test/g; re.customProp = 'bad';",
+          "RegExp.prototype.helper = function() {};"
+        ],
+        "good": [
+          "const re = /test/g; // Keep RegExp instances pure",
+          "const metadata = { helper: function() {} }; // Separate objects"
+        ]
+      },
+      "fixable": false,
+      "requiresTypeInfo": false,
+      "impactDescription": "RegExp modifications disable V8's fast path optimizations for regular expressions",
+      "v8Behavior": "V8 has optimized fast paths for unmodified RegExp instances and prototypes",
+      "tags": ["regexp", "prototype", "modification"],
+      "since": "0.1.0"
+    },
+
+    "no-smi-double-field-transition": {
+      "id": "no-smi-double-field-transition",
+      "name": "No SMI-Double Field Transition",
+      "description": "Prevents field representation transitions that cause performance cliffs",
+      "category": "type-optimization",
+      "defaultSeverity": "error",
+      "documentation": "https://github.com/fabulousDesigns/v8-lint/docs/rules/no-smi-double-field-transition.md",
+      "examples": {
+        "bad": [
+          "class Timer { constructor() { this.time = 0; } start() { this.time = Date.now(); } }",
+          "const obj = { count: 0 }; Object.preventExtensions(obj); obj.count = 3.14;"
+        ],
+        "good": [
+          "class Timer { constructor() { this.time = 0.0; } start() { this.time = Date.now(); } }",
+          "const obj = { count: 0.0 }; Object.preventExtensions(obj); obj.count = 3.14;"
+        ]
+      },
+      "fixable": true,
+      "requiresTypeInfo": false,
+      "impactDescription": "SMI to Double transitions can cause shape deprecation and performance cliffs",
+      "v8Behavior": "V8 optimizes field access based on representation - transitions can cause major slowdowns",
+      "tags": ["smi", "double", "representation", "react", "fields"],
+      "since": "0.1.0"
+    }
+  }
+}
